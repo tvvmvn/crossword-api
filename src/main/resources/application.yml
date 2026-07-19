@@ -8,7 +8,7 @@ spring:
     # 💡 도커 컴포즈의 환경 변수 또는 로컬 env를 바라봅니다.
     url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME}?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
+    username: ${DB_USER}
     # 💡 GitHub Secrets에서 파생되어 도커 컴포즈가 넘겨줄 실제 운영 DB 비밀번호를 받습니다.
     password: ${DB_PASSWORD}
 
