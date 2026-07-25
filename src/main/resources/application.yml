@@ -5,27 +5,40 @@ spring:
 
   # 데이터베이스 연결 설정
   datasource:
-    # 💡 도커 컴포즈의 환경 변수 또는 로컬 env를 바라봅니다.
     url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT:3306}/${MYSQLDATABASE}?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQLUSER}
-    # 💡 GitHub Secrets에서 파생되어 도커 컴포즈가 넘겨줄 실제 운영 DB 비밀번호를 받습니다.
     password: ${MYSQLPASSWORD}
 
   # JPA 하이버네이트 설정
   jpa:
     hibernate:
-      # 업데이트되면 
+      # create: 애플리케이션 시작 시 기존 테이블 Drop 후 재생성
+      # update: 변경된 스키마만 Alter 테이블 (데이터 유지)
+      # validate: 엔티티와 DB 테이블 스키마가 일치하는지만 검증 (일치하지 않으면 서버 실행이 거부됨)
+      # none: 아무것도 안함. 서버는 실행되지만 쿼리 날리면 예외 발생!
+      # 출시 단계에서는 validate으로 세팅! 
+      # validate > none
       ddl-auto: create
     properties:
       hibernate:
-        # jpa가 수행한 쿼리를 SQL형식으로 터미널에 출력합니다 
-        show_sql: true
+        # jpa가 수행한 쿼리를 SQL형식으로 터미널에 출력합니다 (System.out을 사용해서 성능에 안좋음)
+        show_sql: false
         # 출력할 쿼리를 줄바꿈/들여쓰기해서 가독성을 높여줍니다
-        format_sql: true
+        format_sql: false
         # JPA에게 현재 우리 앱에서는 MySQL(방언)을 쓰고 있다고 알려줍니다.
         # JPA는 특정 DB에 종속되지 않으므로 이 정보가 필요합니다.
         dialect: org.hibernate.dialect.MySQLDialect
+
+# 로깅 설정
+# logging:
+#   level:
+#     org.hibernate.SQL: debug # System.out 대신 로거를 통해 출력
+    
+# 서버 주소 앞에 /api 고정하기
+server:
+  servlet:
+    context-path: /api
 
 # 🚨 Swagger 관련 상세 설정 (기본 주소: http://localhost:8080/swagger-ui/index.html)
 springdoc:
@@ -37,8 +50,3 @@ springdoc:
     operations-sorter: alpha
   api-docs:
     path: /api-docs
-
-# 2칸 들여쓰기 준수
-server:
-  servlet:
-    context-path: /api

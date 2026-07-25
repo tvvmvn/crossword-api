@@ -4,8 +4,11 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+// local 및 dev 프로필에서만 실행됨 (prod에서는 숨겨짐)
+@Profile({"local", "dev"})
 public class OpenApiConfig {
 
   @Bean

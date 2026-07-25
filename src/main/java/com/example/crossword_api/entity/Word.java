@@ -5,7 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 @Entity
 public class Word {
   
@@ -15,25 +19,15 @@ public class Word {
   
   private String name;
 
-  @Lob
+  @Lob // LONGTEXT (MySQL)
   private String meaning;
 
-  public Word() {}
+  private String level;
 
-  public Word(String name, String meaning) {
+  // 엔티티 생성용
+  public Word(String name, String meaning, String level) {
     this.name = name;
     this.meaning = meaning;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getMeaning() {
-    return meaning;
+    this.level = level;
   }
 }

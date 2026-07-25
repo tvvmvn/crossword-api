@@ -1,0 +1,101 @@
+name,meaning,level
+apple,사과,easy
+banana,바나나,easy
+cat,고양이,easy
+dog,개,easy
+elephant,코끼리,easy
+flower,꽃,easy
+garden,정원,easy
+house,집,easy
+island,섬,easy
+jungle,"밀림, 정글",easy
+kitchen,"부엌, 주방",easy
+lemon,레몬,easy
+monkey,원숭이,easy
+nature,자연,easy
+ocean,"바다, 해양",easy
+pencil,연필,easy
+queen,여왕,easy
+river,강,easy
+school,학교,easy
+tree,나무,easy
+umbrella,우산,easy
+village,마을,easy
+window,창문,easy
+yellow,노란색,easy
+zebra,얼룩말,easy
+bread,빵,easy
+cloud,구름,easy
+dream,꿈,easy
+earth,"지구, 땅",easy
+friend,친구,easy
+guitar,기타,easy
+heart,"하트, 마음",easy
+jacket,"재킷, 상의",easy
+listen,듣다,easy
+market,"시작, 마켓",easy
+orange,"오렌지, 주황색",easy
+planet,행성,easy
+silver,"은, 은색",easy
+travel,여행하다,easy
+winter,겨울,easy
+accident,"사고, 사건",medium
+balance,"균형, 잔액",medium
+century,"100년, 세기",medium
+disaster,"재앙, 재난",medium
+energy,"에너지, 활력",medium
+factory,공장,medium
+gravity,중력,medium
+history,역사,medium
+imagine,상상하다,medium
+journey,"여정, 여행",medium
+kingdom,왕국,medium
+library,도서관,medium
+machine,기계,medium
+network,"네트워크, 망",medium
+opinion,"의견, 견해",medium
+pattern,"패턴, 양식",medium
+quality,"품질, 질",medium
+research,"연구, 조사",medium
+science,과학,medium
+traffic,"교통, 교통량",medium
+unknown,알려지지 않은,medium
+victory,승리,medium
+weather,날씨,medium
+purpose,"목적, 의도",medium
+strategy,전략,medium
+resource,자원,medium
+solution,"해결책, 용액",medium
+security,"보안, 안전",medium
+schedule,"일정, 스케줄",medium
+response,"응답, 반응",medium
+project,"프로젝트, 과제",medium
+process,"프로세스, 과정",medium
+measure,"측정하다, 조치",medium
+feature,"특징, 기능",medium
+element,"요소, 성분",medium
+develop,"개발하다, 발전하다",medium
+algorithm,알고리즘,hard
+beneficial,"유익한, 이로운",hard
+capacity,"용량, 수용력",hard
+definition,"정의, 해상도",hard
+efficient,효율적인,hard
+foundation,"토대, 재단",hard
+guarantee,"보장하다, 보증",hard
+hierarchy,계층 구조,hard
+innovation,혁신,hard
+justify,정당화하다,hard
+knowledge,지식,hard
+logic,"논리, 로직",hard
+mechanism,"메커니즘, 구조",hard
+navigation,"항해, 탐색",hard
+optimize,최적화하다,hard
+paradigm,"패러다임, 전형",hard
+qualified,자격을 갖춘,hard
+redundant,"불필요한, 중복된",hard
+structure,"구조, 건축물",hard
+threshold,"임계값, 문턱",hard
+universal,"보편적인, 전세계의",hard
+validate,"검증하다, 유효하게 하다",hard
+architecture,"아키텍처, 건축",hard
+persistence,"영속성, 지속성",hard

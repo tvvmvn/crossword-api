@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.crossword_api.dto.PuzzleResponse;
 import com.example.crossword_api.entity.Puzzle;
-import com.example.crossword_api.service.CacheService;
+import com.example.crossword_api.service.PuzzleService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PuzzleController {
 
-  private final CacheService cacheService;
+  private final PuzzleService puzzleService;
   
   // 1. 유저용: 오늘의 퍼즐 요청 (캐시 적용)
   @Operation(
@@ -41,12 +41,13 @@ public class PuzzleController {
   @GetMapping("/puzzle")
   public ResponseEntity<PuzzleResponse> getTodayPuzzle() {
 
+    // 한국 시간 기준으로 오늘의 날짜
     LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
-    Puzzle puzzle = cacheService.getPuzzleByDate(today);
+    // 캐시로부터 오늘 날짜에 해당하는 퍼즐을 가져옵니다.
+    PuzzleResponse puzzleResponse = puzzleService.getPuzzleByDate(today);
 
-    PuzzleResponse puzzleResponse = new PuzzleResponse(puzzle.getPuzzleData(), puzzle.getPublishDate());
-  
-    return ResponseEntity.status(HttpStatus.CREATED).body(puzzleResponse);
+    // 200 OK
+    return ResponseEntity.ok(puzzleResponse);
   }
 }

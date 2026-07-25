@@ -12,9 +12,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PuzzleResponse {
 
-  @Schema(description = "퍼즐 보드", example = "2차원 표 형태") 
+  @Schema(description = "퍼즐 데이터", example = "JSON 형태") 
   private PuzzleData puzzleData;
 
-  @Schema(description = "출시 날짜", example = "2026-07-19") 
+  @Schema(description = "출시일", example = "2026-07-19") 
   private LocalDate publishDate;
 }

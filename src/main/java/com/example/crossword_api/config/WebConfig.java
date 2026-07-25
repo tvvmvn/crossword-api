@@ -18,8 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     // 서버의 전체 경로를 대상으로 CORS가 가능하도록 합니다.
     registry.addMapping("/**") 
-        // Vercel 서버를 허용합니다.
         .allowedOrigins(clientUrl) 
+        // .allowedOriginPatterns( "*") // 모든 요청을 허용합니다
         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
         .allowedHeaders("*")
         .allowCredentials(true)
