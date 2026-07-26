@@ -1,7 +1,6 @@
 package com.example.crossword_api.service;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
