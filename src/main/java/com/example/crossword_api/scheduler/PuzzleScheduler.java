@@ -18,7 +18,7 @@ public class PuzzleScheduler {
 
   private final PuzzleService puzzleService;
   
-  // (한국 시간 기준) 매일 자정 정각 00시 00분 00초에 새로운 퍼즐로 캐시를 갱신합니다.
+  // 한국 시간 기준으로 매일 자정 정각 (00시 00분 00초)에 새로운 퍼즐로 캐시를 갱신합니다.
   @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
   public void refreshDailyPuzzleCache() {
 

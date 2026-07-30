@@ -23,7 +23,7 @@ FROM eclipse-temurin:24-jre-alpine
 COPY --from=build /home/src/build/libs/*.jar app.jar
 # 컨테이너가 켜지면 실행할 명령어
 # ENTRYPOINT에 3대장 다이어트 옵션(-Xmx, -XX:MaxMetaspaceSize, -Xss) 추가!
-# 차례대로 Heap, Metaspace, Thread Stack 다이어트 명령어!
+# 차례대로 Heap 256MB, Metaspace 128MB, Thread Stack 256KB 다이어트 명령어!
 ENTRYPOINT ["java", "-Xmx256m", "-XX:MaxMetaspaceSize=128m", "-Xss256k", "-jar", "app.jar"]
 
 

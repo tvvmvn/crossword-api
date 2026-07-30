@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// API 키를 검증하는 절차는 간단하므로 스프링의 Web 라이브러리만으로 충분히 구현할 수 있습니다.
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

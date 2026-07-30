@@ -44,19 +44,21 @@ public class PuzzleController {
   @GetMapping("/puzzle")
   public ResponseEntity<PuzzleResponse> getTodayPuzzle() {
 
-    // 한국 시간 기준 오늘 날짜를 퍼즐을 찾을 키로 사용합니다.
+    // 7/30일 오전 7시에 요청이 도착했다고 가정해보자. (출근길 플레이!)
+
+    // 한국 시간 기준 오늘의 날짜를 구합니다. 값: 7/30
     LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-    // 캐시로부터 오늘 날짜에 해당하는 퍼즐을 가져옵니다.
+    // 7/30일자 퍼즐을 찾습니다. 스케줄러가 이미 자정에 만들어서 캐시에 저장해줬지롱
     PuzzleResponse puzzleResponse = puzzleService.getPuzzleByDate(today);
 
-    // 1. 현재 시간 및 오늘 밤 자정(23:59:59) 시간 구하기
+    // 요청이 도착한 날짜, 시간을 구합니다. 값: 7/30일 오전 7시
     LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-    // endOfTody: 23:59:59.999999999
-    LocalDateTime endOfToday = LocalDateTime.now().with(LocalTime.MAX); 
-    // 2. 지금부터 자정까지 남은 시간(초) 계산
+    // 자정 바로 전을 의미합니다. 값: 23:59:59 
+    LocalDateTime endOfToday = now.with(LocalTime.MAX); 
+    // 요청이 도착한 오전 7시부터 자정까지 남은 시간(초)를 계산합니다. 값: 16:59:59
     long secondsUntilMidnight = Math.max(0, Duration.between(now, endOfToday).getSeconds());
     
-    // 3. 남은 시간만큼만 Cache-Control 적용
+    // 남은 시간만큼만 maxAge(최대 수명) 적용합니다. maxAge: 16.59.59시간
     return ResponseEntity.ok()
         // maxAge(long maxAge, TimeUnit unit)
         .cacheControl(CacheControl.maxAge(secondsUntilMidnight, TimeUnit.SECONDS).cachePublic())
