@@ -38,3 +38,7 @@ out/
 
 ### enviroment variables ###
 .env
+
+###
+/archive
+words.csv

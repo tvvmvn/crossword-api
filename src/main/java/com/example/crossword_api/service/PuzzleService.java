@@ -1,9 +1,9 @@
 package com.example.crossword_api.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +12,9 @@ import com.example.crossword_api.domain.PuzzleData;
 import com.example.crossword_api.domain.PuzzleGenerator;
 import com.example.crossword_api.dto.PuzzleResponse;
 import com.example.crossword_api.entity.Puzzle;
+import com.example.crossword_api.entity.Word;
 import com.example.crossword_api.repository.PuzzleRepository;
+import com.example.crossword_api.repository.WordRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 public class PuzzleService {
 
-  private final PuzzleGenerator puzzleGenerator;
+  private final WordRepository wordRepository;
 
   private final PuzzleRepository puzzleRepository;
 
@@ -36,28 +38,45 @@ public class PuzzleService {
     log.info("🎯 [Cache Miss] 캐시에 퍼즐이 없어서 진짜 DB를 조회합니다! (날짜: {})", date);
 
     Puzzle puzzle = puzzleRepository.findByPublishDate(date)
-      .orElseThrow(() -> new IllegalArgumentException("No puzzle found!"));
+      .orElseThrow(() -> new IllegalArgumentException("이 날짜의 퍼즐이 DB에 없습니다!"));
 
     return new PuzzleResponse(puzzle.getPuzzleData(), puzzle.getPublishDate());
   }
   
-  // 메서드 실행 중 중간에 예외가 발생하면 롤백합니다.C/U/D 연산에서 필요함
+  // 메서드 실행 중 중간에 예외가 발생하면 롤백합니다. C/U/D 연산에서 필요함
   @Transactional
-  // 무조건 메서드 내부를 실행!
-  // CachePut: 반환한 값을 캐시에 저장합니다.
-  @CachePut(value = "todayPuzzle") // 키: #date
-  public PuzzleResponse savePuzzle(LocalDate date) {
-    log.info("🔥 퍼즐을 DB에 저장하고 캐시에 장전합니다. (날짜: {})", date);
+  public void createPuzzle(LocalDate date) {
+    log.info("🔥 퍼즐 생성을 시작합니다. (날짜: {})", date);
 
-    PuzzleData puzzleData = puzzleGenerator.generate();
-    Puzzle puzzle = puzzleRepository.save(new Puzzle(puzzleData, date));
+    if (puzzleRepository.existsByPublishDate(date)) {
+      log.info("해당 날짜({})에 해당하는 퍼즐이 이미 존재합니다. ", date);
+      return;
+    }
 
-    return new PuzzleResponse(puzzle.getPuzzleData(), puzzle.getPublishDate());
+    // 퍼즐 생성에 필요한 데이터들을 준비합니다
+    int boardSize = 10; // 10x10 보드
+    int quizCount = 10; // 퀴즈 10개 생성을 목표로 합니다
+    // 글자 수가 10개 이하인 단어들을 퀴즈 개수 * 4개 만큼 여유있게 확보합니다.
+    List<Word> words = wordRepository.getWordsForPuzzle(boardSize, quizCount * 4);
+    if (words.size() < 1) {
+      throw new RuntimeException("퍼즐 생성용 단어가 없습니다!");
+    }
+
+    // 퍼즐을 생성하고 DB에 저장합니다
+    PuzzleData puzzleData = PuzzleGenerator.generate(words, boardSize, quizCount);
+    puzzleRepository.save(new Puzzle(puzzleData, date));
+    log.info("퍼즐 생성을 완료했습니다.");
   }
 
-  // 캐시를 비웁니다
   @CacheEvict(value = "todayPuzzle", allEntries = true)
-  public void clearAllPuzzleCaches() {
-    log.info("🧹 오래된 퍼즐 캐시를 메모리에서 전부 삭제합니다.");
+  public void clearCache() {
+    log.info("퍼즐 캐시가 비밀리에 삭제되었습니다.");
   }
 }
+
+/*
+# Spring 캐시 어노테이션의 설계 의도
+ 
+Spring의 @Cacheable, @CachePut, @CacheEvict는 AOP(관점 지향 프로그래밍) 기반입니다. 
+비즈니스 로직(Service)에 선언적으로 붙여서 "서비스의 비즈니스 결과물을 선언적으로 캐싱한다"는 목적으로 설계되었습니다.
+*/

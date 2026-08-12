@@ -12,26 +12,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@Entity
 public class Puzzle {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // 객체를 JSON 형태로 저장합니다.
-  // @JdbcType(JsonJdbcType.class)
+  // JSON <> 객체 간의 변환(직렬화/역직렬화)을 수행합니다
   @JdbcTypeCode(SqlTypes.JSON)
+  // json: 이 필드를 MySQL의 JSON 자료형으로 설정합니다.
   @Column(columnDefinition = "json", nullable = false)
   private PuzzleData puzzleData;
   
-  @Column(unique = true)
+  @Column(nullable = false, unique = true)
   private LocalDate publishDate;
 
   public Puzzle(PuzzleData puzzleData, LocalDate publishDate) {

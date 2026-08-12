@@ -6,32 +6,20 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Component;
-
 import com.example.crossword_api.entity.Word;
-import com.example.crossword_api.repository.WordRepository;
 
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 
-@Component
-@RequiredArgsConstructor
-public class PuzzleGenerator {
-  
-  // 10 x 10 Board
-  private final int boardSize = 10;
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class PuzzleGenerator {
 
-  // maximum quiz count per puzzle
-  private final int maxQuizCount = 10;
-
-  private final WordRepository wordRepository;
-  
-  public PuzzleData generate() {
+  // 퍼즐을 생성하는 하나의 핵심 메서드
+  public static PuzzleData generate(List<Word> words, int boardSize, int quizCount) {
+    
     // save current quiz count
     int currentQuizCount = 0;
 
-    // 글자 수가 10개 이하인 단어들을 문제 수 * 3개 만큼 우선 확보합니다.
-    List<Word> words = wordRepository.findRandomWordsWithMaxLength(boardSize, maxQuizCount * 3);
-    
     // 퍼즐 데이터
     Board board = new Board(boardSize, boardSize);
     List<Caption> captions = new ArrayList<>();
@@ -40,7 +28,7 @@ public class PuzzleGenerator {
     Word firstWord = words.get(0);
     // get random number between 0 and 9
     int randomRow = ThreadLocalRandom.current()
-      .nextInt(0, firstWord.getName().length());
+        .nextInt(0, firstWord.getName().length());
 
     for (int z = 0; z < firstWord.getName().length(); z++) {
       Cell cell = new Cell();
@@ -53,7 +41,7 @@ public class PuzzleGenerator {
     for (int i = 1; i < words.size(); i++) {
 
       // Done! let's get out
-      if (currentQuizCount >= maxQuizCount) {
+      if (currentQuizCount >= quizCount) {
         break;
       }
 

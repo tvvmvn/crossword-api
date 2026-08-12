@@ -15,11 +15,11 @@ public interface WordRepository extends JpaRepository<Word, Integer> {
   @Query(value = """
       SELECT * FROM (
           SELECT * FROM word
-          WHERE CHAR_LENGTH(name) <= :length
+          WHERE CHAR_LENGTH(name) <= :maxWordLength 
           ORDER BY RAND()
-          LIMIT :count
+          LIMIT :wordCount
       ) AS random_words
-      ORDER BY CHAR_LENGTH(name) DESC, name ASC
+      ORDER BY CHAR_LENGTH(name) DESC
       """, nativeQuery = true)
-  List<Word> findRandomWordsWithMaxLength(@Param("length") int length, @Param("count") int count);
+  List<Word> getWordsForPuzzle(@Param("maxWordLength") int maxWordLength, @Param("wordCount") int wordCount);
 }

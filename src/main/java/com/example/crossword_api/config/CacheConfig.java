@@ -18,9 +18,10 @@ public class CacheConfig {
     CaffeineCacheManager cacheManager = new CaffeineCacheManager("todayPuzzle");
     
     cacheManager.setCaffeine(Caffeine.newBuilder()
-      // 데이터 저장 후 1일 뒤 만료됩니다
-      .expireAfterWrite(1, TimeUnit.DAYS) 
-      .maximumSize(10)); // 하루 한 건 위주이므로 작게 설정
+      // 데이터 저장 후 3일 뒤 만료됩니다
+      .expireAfterWrite(3, TimeUnit.DAYS) 
+      // 오래된 날짜의 캐시는 메모리 한도 초과(LRU 알고리즘)로 알아서 밀려나 삭제
+      .maximumSize(10)); 
     
     return cacheManager;
   }

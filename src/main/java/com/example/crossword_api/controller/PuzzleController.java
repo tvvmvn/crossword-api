@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.crossword_api.config.AppConstants;
 import com.example.crossword_api.dto.PuzzleResponse;
 import com.example.crossword_api.service.PuzzleService;
 
@@ -43,16 +44,15 @@ public class PuzzleController {
   )
   @GetMapping("/puzzle")
   public ResponseEntity<PuzzleResponse> getTodayPuzzle() {
-
     // 7/30일 오전 7시에 요청이 도착했다고 가정해보자. (출근길 플레이!)
 
     // 한국 시간 기준 오늘의 날짜를 구합니다. 값: 7/30
-    LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+    LocalDate today = LocalDate.now(ZoneId.of(AppConstants.TIME_ZONE));
     // 7/30일자 퍼즐을 찾습니다. 스케줄러가 이미 자정에 만들어서 캐시에 저장해줬지롱
     PuzzleResponse puzzleResponse = puzzleService.getPuzzleByDate(today);
 
     // 요청이 도착한 날짜, 시간을 구합니다. 값: 7/30일 오전 7시
-    LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    LocalDateTime now = LocalDateTime.now(ZoneId.of(AppConstants.TIME_ZONE));
     // 자정 바로 전을 의미합니다. 값: 23:59:59 
     LocalDateTime endOfToday = now.with(LocalTime.MAX); 
     // 요청이 도착한 오전 7시부터 자정까지 남은 시간(초)를 계산합니다. 값: 16:59:59
@@ -60,9 +60,18 @@ public class PuzzleController {
     
     // 남은 시간만큼만 maxAge(최대 수명) 적용합니다. maxAge: 16.59.59시간
     return ResponseEntity.ok()
-        // maxAge(long maxAge, TimeUnit unit)
+        // maxAge(최대 수명, 값의 단위)
         .cacheControl(CacheControl.maxAge(secondsUntilMidnight, TimeUnit.SECONDS).cachePublic())
         .body(puzzleResponse);
+  }
+
+  // 비밀 요청: 즉시 퍼즐을 생성해 DB에 저장하기 (오늘자 있으면 건너뜀)
+  @GetMapping("/add")
+  public void createNewPuzzle() {
+    LocalDate today = LocalDate.now(ZoneId.of(AppConstants.TIME_ZONE));
+    puzzleService.createPuzzle(today);
+
+    log.info("퍼즐 생성 요청을 처리했습니다");
   }
 }
 

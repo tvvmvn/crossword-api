@@ -19,7 +19,7 @@ spring:
       # none: 아무것도 안함. 서버는 실행되지만 쿼리 날리면 예외 발생!
       # 출시 단계에서는 validate으로 세팅! 
       # validate > none
-      ddl-auto: validate
+      ddl-auto: create
     properties:
       hibernate:
         # jpa가 수행한 쿼리를 SQL형식으로 터미널에 출력합니다 (System.out을 사용해서 성능에 안좋음)
