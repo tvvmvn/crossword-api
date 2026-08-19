@@ -3,8 +3,6 @@ package com.example.crossword_api.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,12 +29,8 @@ public class PuzzleService {
 
   private final PuzzleRepository puzzleRepository;
 
-  // ✅ 캐시에 퍼즐이 있으면 메서드 내부를 실행하지 않습니다.
-  // CachePut과 마찬가지로 반환값을 캐시에 저장합니다.(중요)
-  @Cacheable(value = "todayPuzzle") // 키: #date
   public PuzzleResponse getPuzzleByDate(LocalDate date) {
-    log.info("🎯 [Cache Miss] 캐시에 퍼즐이 없어서 진짜 DB를 조회합니다! (날짜: {})", date);
-
+    // DB 검색 
     Puzzle puzzle = puzzleRepository.findByPublishDate(date)
       .orElseThrow(() -> new IllegalArgumentException("이 날짜의 퍼즐이 DB에 없습니다!"));
 
@@ -66,11 +60,6 @@ public class PuzzleService {
     PuzzleData puzzleData = PuzzleGenerator.generate(words, boardSize, quizCount);
     puzzleRepository.save(new Puzzle(puzzleData, date));
     log.info("퍼즐 생성을 완료했습니다.");
-  }
-
-  @CacheEvict(value = "todayPuzzle", allEntries = true)
-  public void clearCache() {
-    log.info("퍼즐 캐시가 비밀리에 삭제되었습니다.");
   }
 }
 
