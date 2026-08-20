@@ -1,15 +1,15 @@
 package com.example.crossword_api.controller;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.crossword_api.config.AppConstants;
 import com.example.crossword_api.dto.PuzzleResponse;
 import com.example.crossword_api.service.PuzzleService;
 
@@ -36,31 +36,20 @@ public class PuzzleController {
     description = "조회 성공", 
     content = @Content(schema = @Schema(implementation = PuzzleResponse.class))
   )
-  @GetMapping("/puzzle")
-  public ResponseEntity<PuzzleResponse> getTodayPuzzle() {
-    // 한국 시간 기준 오늘의 날짜를 구합니다. 값: 7/30
-    LocalDate today = LocalDate.now(ZoneId.of(AppConstants.TIME_ZONE));
-    // 7/30일자 퍼즐을 찾습니다. 
-    PuzzleResponse puzzleResponse = puzzleService.getPuzzleByDate(today);
+  // @PathVariable: URL의 경로(예: 2026-08-19)를 매개변수 date에 매핑합니다
+  // @DateTimeFormat(pattern = "yyyy-MM-dd"): 스프링에게 전달받은 문자열로부터 날짜를 구하는 방법을 알려줍니다
+  @GetMapping("/puzzles/{date}")
+  public ResponseEntity<PuzzleResponse> getTodayPuzzle(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    // 
+    PuzzleResponse puzzleResponse = puzzleService.getPuzzleByDate(date);
     
-    log.info("원본 서버가 퍼즐을 전송합니다.");
+    log.info("원본 서버가 {}자 퍼즐을 전송합니다.", date);
+
     // 남은 시간만큼만 maxAge(최대 수명) 적용합니다. maxAge: 1일
     return ResponseEntity.ok()
         // maxAge(최대 수명, 값의 단위)
-        .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS).cachePublic())
+        .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).cachePublic())
         .body(puzzleResponse);
-  }
-
-  // 비밀 요청: 즉시 퍼즐을 생성해 DB에 저장하기 (오늘자 있으면 건너뜀)
-  @GetMapping("/add")
-  public ResponseEntity<String> createNewPuzzle() {
-    
-    LocalDate today = LocalDate.now(ZoneId.of(AppConstants.TIME_ZONE));
-    puzzleService.createPuzzle(today);
-
-    log.info("퍼즐 생성 요청을 처리했습니다");
-
-    return ResponseEntity.ok().body("Done!");
   }
 }
 

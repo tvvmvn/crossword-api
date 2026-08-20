@@ -10,6 +10,4 @@ import com.example.crossword_api.entity.Puzzle;
 public interface PuzzleRepository extends JpaRepository<Puzzle, Long> {
   //
   Optional<Puzzle> findByPublishDate(LocalDate publishDate);
-
-  boolean existsByPublishDate(LocalDate publishDate);
 }
